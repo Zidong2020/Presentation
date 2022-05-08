@@ -1,0 +1,164 @@
+<html>
+<head>
+
+<style>
+
+body {
+	font-family:verdana;
+    background-image: none;
+    background-color: whitesmoke;
+    width: 1422px;
+
+}
+
+.headerLogo{
+  top: -65px;
+  height: 150px;
+  line-height: 150px;
+  overflow: hidden;
+  text-align: center;
+  
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #3c096c;
+    max-width: 1422px;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: grey;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+    
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: .8;
+}
+
+tr{
+   text-align: top;
+   background-color:#ffffff
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+img:hover {
+  opacity: .6;
+}
+
+.myDiv {
+  border: 5px outset lightgray;
+  background-color: lightslategrey;
+  text-align: center;
+}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+</head>
+
+
+
+<body>
+
+<div class="headerLogo">
+<img src="https://zidongxu.georgetown.domains/ANLY560//pic/house_banner.png" width=1422px height=175px/>
+</div>
+
+<!--Navigation bar-->
+<div id="nav-placeholder">
+    
+</div>
+
+<script>
+$(function(){
+  $("#nav-placeholder").load("nav.html");
+});
+</script>
+<!--end of Navigation bar-->
+
+<table width="100%">
+	<col style="width:28%">
+	<col style="width:70%">
+	<col style="width:2%">
+	
+	<tbody>
+	<tr>
+		<th></th>
+		<td><p><font color=#3c096c><strong>About Me </strong></font><br>
+		</p>
+		</td>
+		<td></td>
+	</tr>
+
+	<tr>
+		<th><img src="https://zidongxu.georgetown.domains/ANLY560//pic/school_1.png" width=370px height=270px>
+		<font size="2" color="grey">pic1.1</font>
+		</th>
+		<td>
+		  <br><font color=#3c096c><strong>Zidong Xu </strong>
+          <br>NetID: zx92
+          <br>Student, Data Analytics 
+          <br>Georgetown University </font><br>
+          <img src="https://zidongxu.georgetown.domains/ANLY560//pic/school_logo.png"
+            width=400px height=180px> 
+		</td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th>
+	    Topic: Financial Market Analysis
+		</th>
+		<td>
+		<strong>Zidong Xu </strong>- a student of the Data Science and Analytics Program at Georgetown University, interested in how to apply data analysis methods to the financial field and hope to learn more interesting things during my graduate school. <br>
+		Welcome to contact me via email: <Strong>zx92@georgetown.edu</Strong> <br>
+
+		</td>
+		<td></td>
+	</tr>
+	
+	
+	</tbody>
+</table>

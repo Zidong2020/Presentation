@@ -1,0 +1,157 @@
+---
+title: "Untitled"
+author: "Zidong Xu"
+date: "4/23/2022"
+output: html_document
+---
+
+```{r }
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+require(timeDate)
+
+```
+
+```{r }
+# ggplot2 for VIS
+
+df_mac_industry_area_estate_invest_month <- read.csv(file = 'df_mac_industry_area_estate_invest_month.csv')
+head(df_mac_industry_area_estate_invest_month)
+
+# Beijing
+df_Beijing <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='北京市') %>%
+  select(stat_month, invest) 
+
+ggplot(df_Beijing, aes(stat_month,invest))+geom_line(group = 1)+
+  ggtitle("Beijing estate month investment (100 million)") +
+  xlab("stat_month")+
+  ylab("invest")+geom_point(color="purple")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+# Hunan Province
+df_Hunan <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='湖南省') %>%
+  select(stat_month, invest) 
+
+ggplot(df_Hunan, aes(stat_month,invest))+geom_line(group = 1)+
+  ggtitle("Hunan Province estate month investment (100 million)") +
+  xlab("stat_month")+
+  ylab("invest")+geom_point(color="lightgreen")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+  
+```
+
+```{r }
+# transform to ts data
+# No January data
+# Beijing
+df_Beijing <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='北京市') %>%
+  select(invest) 
+
+df_Beijing.ts=ts(df_Beijing, start = decimal_date(as.Date("2000-02-01")),frequency = 11)
+str(df_Beijing.ts)
+
+# Hunan
+df_Hunan <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='湖南省') %>%
+  select(invest) 
+
+df_Hunan.ts=ts(df_Hunan, start = decimal_date(as.Date("2000-02-01")),frequency = 11)
+str(df_Hunan.ts)
+
+autoplot(df_Beijing.ts, series = "Beijing")+
+  autolayer(df_Hunan.ts, series = "Hunan")+
+  xlab("Year")+
+  ylab("Invest")+
+  scale_color_manual(values = c("Beijing"="purple","Hunan"="grey50"),
+                     breaks = c("Beijing","Hunan"))+
+  ggtitle("Beijing_Hunan Province estate month invest (100 million)")
+
+```
+
+```{r }
+# HW3_models
+df_Beijing_log <- log(df_Beijing.ts)
+
+# sarima(df_Beijing_log, 1,1,1,0,1,1,11)
+
+length(df_Beijing_log) #194
+
+train=ts(df_Beijing_log[1:150], frequency = 11)
+
+test=ts(df_Beijing_log[151:194], frequency = 11)
+
+fit <- Arima(train,order = c(1,1,1), seasonal = c(0,1,1),include.drift = TRUE)
+summary(fit)
+
+pred=forecast(fit,44)
+accuracy(pred)
+
+(mae1 <- abs(mean(as.numeric(pred$mean)-as.numeric((test)))))
+
+```
+
+
+```{r }
+# Do a seasonal cross validation using 1 step ahead forecasts and s (your seasonal period)  steps ahead forecasts.
+# SARIMA(1,1,1)(0,1,1)[11] 
+
+### 11 step ahead forecasts
+length(df_Beijing_log) #194
+df_Beijing_log = df_Beijing_log[1:187]
+
+k <- 44 # minimum data length for fitting a model (4 seasonal lags)
+n <- length(df_Beijing_log)
+n-k #143
+
+df_Beijing_log=ts(df_Beijing_log,frequency=11)
+
+# 143/11=13
+mae2 <- matrix(NA, n-k-11, 11)
+
+st <- tsp(df_Beijing_log)[1]+(k-2)/11
+
+
+head(df_Beijing_log)
+
+mae2 <- matrix(NA,n-k,11)
+st <- tsp(df_Beijing_log)[1]+(k-2)/11 
+
+for(i in 1:(n-k))
+{
+  xtrain <- window(df_Beijing_log, end=st + i/11)
+  xtest <- window(df_Beijing_log, start=st + (i+1)/11, end=st + (i+11)/11)
+  
+  fit <- Arima(xtrain, order=c(1,1,1), seasonal=list(order=c(0,1,1), period=11),
+                include.drift=TRUE, lambda=0, method="ML")
+  fcast <- forecast(fit, h=11)
+  
+  mae2[i,1:length(xtest)] <- abs(fcast$mean-xtest)
+  
+}
+
+# plot
+plot(1:11, colMeans(mae2,na.rm=TRUE), type="l", col=2, xlab="horizon", ylab="MAE", main="Seasonal Cross Validation")
+
+write.csv(df_Beijing_log, file = "hw5_dataset.csv")
+
+```
+
+
+
+

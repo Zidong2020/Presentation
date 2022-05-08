@@ -1,0 +1,244 @@
+<html>
+<head>
+
+<style>
+
+body {
+	font-family:verdana;
+    background-image: none;
+    background-color: whitesmoke;
+    width: 1422px;
+
+}
+
+.headerLogo{
+  top: -65px;
+  height: 150px;
+  line-height: 150px;
+  overflow: hidden;
+  text-align: center;
+  
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #3c096c;
+    max-width: 1422px;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: grey;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+    
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: .8;
+}
+
+tr{
+   text-align: top;
+   background-color:#ffffff
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+img:hover {
+  opacity: .6;
+}
+
+.myDiv {
+  border: 5px outset lightgray;
+  background-color: lightslategrey;
+  text-align: center;
+}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+</head>
+
+
+
+<body>
+
+<div class="headerLogo">
+<img src="https://zidongxu.georgetown.domains/ANLY560//pic/house_banner.png" width=1422px height=175px/>
+</div>
+
+<!--Navigation bar-->
+<div id="nav-placeholder">
+    
+</div>
+
+<script>
+$(function(){
+  $("#nav-placeholder").load("nav.html");
+});
+</script>
+<!--end of Navigation bar-->
+
+<table width="100%">
+	<col style="width:28%">
+	<col style="width:70%">
+	<col style="width:2%">
+	
+	<tbody>
+	<tr>
+		<th></th>
+		<td><font color=#3c096c><strong>Financial Time Series Models (ARCH/GARCH) </strong></font>
+		</td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/pic7.1.png" width=300px height=200px><br><br>
+		<font size="2" color="grey">pic7.1</font>
+		</th>
+		<td>
+        <font color=#3c096c><strong>Brief Description about this part: </strong> </font><br>
+          <p>
+              In this part, we use Agree Realty Corporation (ADC) stock data: <br><br>
+              Relevant code for this part: <br><br>
+              <a href="HW_4_models.Rmd" target="_blank">HW_4_models.Rmd </a><br><br>
+          </p>      
+          
+        </td>
+		<td></td>
+		
+	</tr>
+	
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        a). Plot the data and comment about the stationarity and volatility of the data. <br><br>
+        Original data (stock price) plot: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p1.png" width=600px height=330px></a><br><br>
+        We can see that the values in the original series fluctuate widely, so we need to logarithmically transform the returns data obtained after differencing transformation. <br><br><br>
+        
+        Returns plot: <br><br>
+        returns = diff(log(ts(ADC.close)))<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p2.png" width=600px height=330px></a><br><br>
+        Looking at the graph after the data transformation, we can find that there is no obvious trend or periodic fluctuation in the graph, and most of the values fluctuate around a stable value, so we can guess that the returns sequence may be stationary. However, we can also find that in the later part of the series, there is a small period of time where the fluctuation of the data is significantly stronger than other periods. So there is obvious volatility in this data. <br><br>
+      
+      </p>
+
+     <p>
+        b). Fit an appropriate AR+ARCH/ARMA+GARCH or ARIMA-ARCH/GARCH for the returns data. <br><br><br>
+
+        ** How do you selected the correct AR(p), ARMA(p,q) or ARIMA(p,d,q) for the data (Plot the ACF and PACF of the data)?<br><br>
+        In order to better choose the appropriate model, we first draw the acf and pacf plots. By observation, we see that there are distinct peaks in both plots, which means that the series has a strong autocorrelation, so we may first need the ARIMA model we use to fit the series. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p3.png" width=600px height=350px></a><br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p4.png" width=600px height=350px></a><br><br>
+    
+        By looking at the ACF and PACF plots, we can get a rough idea of the range of p and q. We can see that in the ACF plot, there is a big drop after q=3, so we can try a q of 0:3. Also we can see that in the ACF plot, there is a big drop after p=5, so we can try a p of 0:5.Next we use a for loop to select the model with the smallest error (selected according to the smallest AIC). <br><br>
+        By calculation we find that the model with parameters c(5,0,2) is the best. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p9.png" width=630px height=200px></a><br><br><br><br>
+    
+
+        ** What do you see when you check the standardized residuals plot? Do you think further modeling is needed?<br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p5.png" width=600px height=400px></a><br><br>
+        We use SARIMA for model diagnosis. Looking at the normalized residuals plot, we see that there is still a short period of high volatility in the data, so we may then use an ARCH/GARCH model to fit this part.<br><br><br><br>
+
+
+        ** If you decided on further modeling how do you choose the appropriate GARCH(p,q) model (Plot ACF and PACF of squared returns/squared residuals of the data, what do you see? Do you think ARCH/GARCH model is appropriate? Why?)?<br><br>
+        In order to observe the auto correlation of the residual part more clearly, we use arima.res^2 to draw the ACF and PACF graphs.<br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p6.png" width=600px height=350px></a><br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p7.png" width=600px height=350px></a><br><br>
+        By looking at the ACF and PACF plots after zooming in on the features, we can see that the plots still show significant autocorrelation in the sequence. But at the same time, we can also observe that the period with large fluctuations in the residual series is very short , so we think it is more appropriate to use the ARCH model next. <br><br>
+        Therefore, we select the appropriate p value by observing the PACF graph. By observing, we find that the phenomenon of truncation occurs after p=4, and when lag=1, 2, 4, the corresponding value is larger, so we can try compare the fitting effects of different models when p=1, 2, and 4. <br><br>
+        By comparison, we find that the model fitting effect of q=4 is the best. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p10.png" width=600px height=550px></a><br><br><br><br>
+    
+        ** What is your chosen best AR+ARCH/ARMA+GARCH  or ARIMA-ARCH/GARCH or model?<br><br>
+        The model we chosen is ARIMA+ARCH. <br><br><br><br>
+
+
+        ** What can you say about your final model? What can you say about it's residuals by according to the Box Ljung test results from the model?<br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p8.png" width=470px height=300px></a><br><br>
+        We can see that the p-values of all Ljung-Box tests are below 0.05, indicating that the residuals of this model are normally distributed and white noise, and there is nothing else to model. The model we used is already a good fit, everything in the original sequence is well extracted by the model. Furthermore, we can see that the p-values for the Jarque-Bera test and the Shapiro-Wilk test are also below 0.05, again indicating that the residuals of the model are white noise. <br><br>
+
+
+      </p>
+
+      <p>
+        c). Write the equation of the model. <br><br>
+        The model we chosen is ARIMA+ARCH. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models(garch)/p11.png" width=700px height=90px></a><br><br>
+
+      </p>
+
+
+     
+
+      </td>
+	</tr>
+
+
+	<tr>
+		<th></th>
+		<td>
+           <strong>Reference: </strong><br>
+           pic7.1: <a href="https://www.econometrics-with-r.org/16-4-volatility-clustering-and-autoregressive-conditional-heteroskedasticity.html" >https://www.econometrics-with-r.org/16-4-volatility-clustering-and-autoregressive-conditional-heteroskedasticity.html</a>  
+        </td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th> <strong>Zidong Xu </strong> </th>
+		<td>
+        <br><br>
+        NetID: zx92<br>
+        Student, Data Analytics<br>
+        Georgetown University<br>
+        </td>
+		<td></td>
+	</tr>
+	
+	</tbody>
+</table>
+
+</body>
+</html>

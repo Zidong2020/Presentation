@@ -1,0 +1,384 @@
+---
+title: "HW3_model"
+author: "Zidong Xu"
+date: "2/27/2022"
+output: html_document
+---
+
+```{r }
+install.packages('timeDate')
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+require(timeDate)
+```
+
+```{r }
+# ggplot2 for VIS
+
+df_mac_industry_area_estate_invest_month <- read.csv(file = 'df_mac_industry_area_estate_invest_month.csv')
+head(df_mac_industry_area_estate_invest_month)
+
+# Beijing
+df_Beijing <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='北京市') %>%
+  select(stat_month, invest) 
+
+ggplot(df_Beijing, aes(stat_month,invest))+geom_line(group = 1)+
+  ggtitle("Beijing estate month investment (100 million)") +
+  xlab("stat_month")+
+  ylab("invest")+geom_point(color="purple")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+# Hunan Province
+df_Hunan <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='湖南省') %>%
+  select(stat_month, invest) 
+
+ggplot(df_Hunan, aes(stat_month,invest))+geom_line(group = 1)+
+  ggtitle("Hunan Province estate month investment (100 million)") +
+  xlab("stat_month")+
+  ylab("invest")+geom_point(color="lightgreen")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+  
+```
+
+```{r }
+# transform to ts data
+# No January data
+# Beijing
+df_Beijing <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='北京市') %>%
+  select(invest) 
+
+df_Beijing.ts=ts(df_Beijing, start = decimal_date(as.Date("2000-02-01")),frequency = 11)
+str(df_Beijing.ts)
+
+# Hunan
+df_Hunan <- df_mac_industry_area_estate_invest_month %>%
+  filter(area_name=='湖南省') %>%
+  select(invest) 
+
+df_Hunan.ts=ts(df_Hunan, start = decimal_date(as.Date("2000-02-01")),frequency = 11)
+str(df_Hunan.ts)
+
+autoplot(df_Beijing.ts, series = "Beijing")+
+  autolayer(df_Hunan.ts, series = "Hunan")+
+  xlab("Year")+
+  ylab("Invest")+
+  scale_color_manual(values = c("Beijing"="purple","Hunan"="grey50"),
+                     breaks = c("Beijing","Hunan"))+
+  ggtitle("Beijing_Hunan Province estate month invest (100 million)")
+```
+
+```{r }
+# Moving Average Smoothing
+
+library(gridExtra)
+
+ma3 <- autoplot(df_Beijing.ts, series="Data") +
+  autolayer(ma(df_Beijing.ts,3), series="3-MA") +
+  xlab("Year") + ylab("Invest (100 million)") +
+  ggtitle("Bejing Estate Month Investment") +
+  scale_colour_manual(values=c("Data"="grey50","3-MA"="red"),
+                      breaks=c("Data","3-MA"))
+
+ma5 <- autoplot(df_Beijing.ts, series="Data") +
+  autolayer(ma(df_Beijing.ts,5), series="5-MA") +
+  xlab("Year") + ylab("Invest (100 million)") +
+  ggtitle("Bejing Estate Month Investment") +
+  scale_colour_manual(values=c("Data"="grey50","5-MA"="red"),
+                      breaks=c("Data","5-MA"))
+
+ma10 <- autoplot(df_Beijing.ts, series="Data") +
+  autolayer(ma(df_Beijing.ts,10), series="10-MA") +
+  xlab("Year") + ylab("Invest (100 million)") +
+  ggtitle("Bejing Estate Month Investment") +
+  scale_colour_manual(values=c("Data"="grey50","10-MA"="red"),
+                      breaks=c("Data","10-MA"))
+
+grid.arrange(ma3, ma5,ma10, nrow = 3, ncol=1)
+
+# We can see that since the seasonal period in our time series is 11, when we set ma=3, the new time series are very close to the original time series, and when we adjust ma=5, we can see the new time series has reduced volatility compared to the original time series. Finally, when we set ma=10, which is very close to our seasonal period 11, we can see that the new time series has basically fluctuated slightly around the annual average.
+
+# Therefore, we found that when the value of MA is increased, the new time series can better reflect the overall trend in the original time series, while ignoring the fluctuations in the smaller interval.
+
+```
+
+```{r }
+#1.
+
+# a. ACF
+ggAcf(df_Beijing.ts)
+# We can see that many lag values exceed boundary, so the series is not stationary.
+
+# PACF
+# ggPacf(df_Beijing.ts)
+
+# b. Dickey-Fuller Test 
+adf.test(df_Beijing.ts)
+# p-value = .01>.05, we cannot reject the ho, thus our data is not stationary.
+```
+
+```{r }
+#2. log transformation
+df_Beijing_log <- log(df_Beijing.ts)
+# a. ACF
+ggAcf(df_Beijing_log)
+# We can see that after log transformation, there are still many lag values out of bounds, so the series is not stationary.
+
+
+# b. Dickey-Fuller Test 
+adf.test(df_Beijing_log)
+# p-value = .01>.05, we cannot reject the H0, thus our data is not stationary.
+```
+
+```{r }
+#3. difference the transformed time series data
+
+# a. ACF (1st order diff)
+ggAcf(diff(df_Beijing_log))
+# We can see that after log and 1st difference transformation, time series shows clear seasonal effect, so we need to do a "Seasonal Difference".
+
+ggAcf(diff(df_Beijing_log,11))
+# After seasonal difference, we can see that in the Acf plot, after lag=8, the lag value are all below the boundary.
+
+df_Beijing_log %>% diff(lag=11) %>% diff() %>% ggAcf()
+# one seasonal diff(), one 1st diff()
+
+# b. Dickey-Fuller Test 
+adf.test(diff(diff(df_Beijing_log,11)))
+# # After seasonal difference, p-value = .0039>.05, so we reject the H0, thus time series is stationary now.
+```
+
+```{r }
+#4. plot ACF and PACF to choose p,d,q,P,D,Q
+
+# ACF
+df_Beijing_log %>% diff(lag=11) %>% diff() %>% ggAcf() 
+
+# PACF
+df_Beijing_log %>% diff(lag=11) %>% diff() %>% ggPacf() 
+
+
+```
+
+```{r }
+#5. fit model
+
+d=1
+D=1
+i=1
+
+temp= data.frame()
+ls=matrix(rep(NA,9*100),nrow=100)
+
+for (p in 1:2)
+{
+  for(q in 1:2)
+  {
+    for(P in 0:1)
+    {
+      for (Q in 1) 
+        {
+          if(p+d+q+P+D+Q<=10)
+          {
+            model<- Arima(df_Beijing_log,order=c(p,d,q), 
+                          seasonal = c(P,D,Q)) 
+            #including drift because of the obvious trend
+            ls[i,]= c(p,d,q,P,D,Q,model$aic,model$bic,model$aicc)
+            i=i+1
+            # print(i)
+        }
+      }
+    }
+  }
+}
+
+temp = as.data.frame(ls)
+            
+names(temp) = c("p","d","q","P","D","Q","AIC","BIC","AICc")
+temp
+
+temp[which.min(temp$AIC),] #c(1,1,1,0,1,1)
+
+temp[which.min(temp$BIC),] #c(1,1,1,0,1,1)
+```
+
+```{r }
+#6. model diagnostic
+fit <- sarima(df_Beijing_log, 1,1,1,0,1,1,11)
+fit
+
+# We can see that the p values for Ljung-Box statistic are all large, so there is no significant correlation in this series anymore.
+
+df_Beijing_log %>%
+  Arima(order = c(1,1,1), seasonal = c(0,1,1)) %>%
+  residuals() %>%
+  ggtsdisplay()
+
+```
+
+```{r }
+#7. use auto.arima() to fit
+auto.arima(df_Beijing_log)
+```
+
+```{r }
+#9. Compare your ARIMA model with all the benchmark methods. 
+length(df_Beijing_log) #194
+
+train=ts(df_Beijing_log[1:150], frequency = 11)
+
+test=ts(df_Beijing_log[151:194], frequency = 11)
+
+fit <- Arima(train,order = c(1,1,1), seasonal = c(0,1,1),include.drift = TRUE)
+summary(fit)
+
+pred=forecast(fit,44)
+accuracy(pred)
+
+f1 <- meanf(train, h=44) 
+accuracy(f1)
+
+f2 <- naive(train, h=44) 
+accuracy(f2) 
+
+f3 <- rwf(train,drift=TRUE, h=44) 
+accuracy(f3)   
+
+pred[['mean']]
+sapply(pred$fitted,mean)
+
+(mae1 <- abs(mean(as.numeric(pred$mean)-as.numeric((test)))))
+(mae11 <- abs(mean(as.numeric(f1$mean)-as.numeric((test)))))
+(mae12 <- abs(mean((as.numeric(f2$mean)-as.numeric((test))))))
+(mae13 <- abs(mean((as.numeric(f3$mean)-as.numeric((test))))))
+
+autoplot(train) +
+  autolayer(meanf(train, h=44),
+            series="Mean", PI=FALSE) +
+  autolayer(naive(train, h=44),
+            series="Naïve", PI=FALSE) +
+  autolayer(rwf(train, drift=TRUE, h=44),
+            series="Drift", PI=FALSE) +
+  autolayer(forecast(fit,44), 
+            series="fit",PI=FALSE) +
+  ggtitle("Bejing estate month investment (log transformation)") +
+  xlab("Month") + ylab("million RMB") +
+  guides(colour=guide_legend(title="Forecast"))
+
+
+
+```
+```{r }
+# 8. Do a seasonal cross validation using 1 step ahead forecasts and s (your seasonal period)  steps ahead forecasts.
+# SARIMA(1,1,1)(0,1,1)[11] 
+
+### 1 step ahead forecasts
+length(df_Beijing_log) #194
+df_Beijing_log = df_Beijing_log[1:187]
+
+k <- 44 # minimum data length for fitting a model (4 seasonal lags)
+n <- length(df_Beijing_log)
+n-k #143
+
+df_Beijing_log=ts(df_Beijing_log,frequency=11)
+
+# 143/11=13
+mae <- matrix(NA, n-k-11, 11)
+
+st <- tsp(df_Beijing_log)[1]+(k-2)/11
+
+
+for(i in 1:(n-k-11))
+{
+  xtrain <- window(df_Beijing_log, start=st+(i-k+1)/11, end=st+i/11)
+  xtest <- window(df_Beijing_log, start=st+(i+1)/11, end=st+(i+11)/11)
+  
+  fit <- Arima(xtrain, order=c(1,1,1), seasonal=list(order=c(0,1,1), period=11),
+                include.drift=TRUE, lambda=0, method="ML")
+  
+  fcast <- forecast(fit, h=11)
+  
+  mae[i,1:length(xtest)] <- abs(fcast$mean-xtest)
+}
+
+
+
+### s steps ahead forecasts
+
+head(df_Beijing_log)
+
+mae2 <- matrix(NA,n-k,11)
+st <- tsp(df_Beijing_log)[1]+(k-2)/11 
+
+for(i in 1:(n-k))
+{
+  xtrain <- window(df_Beijing_log, end=st + i/11)
+  xtest <- window(df_Beijing_log, start=st + (i+1)/11, end=st + (i+11)/11)
+  
+  fit <- Arima(xtrain, order=c(1,1,1), seasonal=list(order=c(0,1,1), period=11),
+                include.drift=TRUE, lambda=0, method="ML")
+  fcast <- forecast(fit, h=11)
+  
+  mae2[i,1:length(xtest)] <- abs(fcast$mean-xtest)
+  
+}
+
+
+### plot
+
+plot(1:11, colMeans(mae,na.rm=TRUE), type="l", col=2, xlab="horizon", ylab="MAE", main="Seasonal Cross Validation")
+lines(1:11, colMeans(mae2,na.rm=TRUE), type="l",col=3)
+legend("topleft",legend=c("1 step ahead forecasts","s steps ahead forecasts"),col=2:4,lty=1)
+
+# Through observation, we found that when using s steps ahead forecasts, the model's prediction accuracy for data in the later period of a cycle is better than 1 step ahead forecast, which may be due to the fact that our data is calculated year by year, and It shows that Beijing's investment in the real estate industry has a relatively stable growth every year.
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

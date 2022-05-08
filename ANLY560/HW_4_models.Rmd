@@ -1,0 +1,153 @@
+---
+title: "560 hw4"
+author: "Zidong Xu"
+date: "3/30/2022"
+output: html_document
+---
+```{r}
+library(TSA)
+library(fGarch) 
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(tidyverse)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+library(fGarch) 
+```
+
+```{r }
+getSymbols("ADC", from="2010-01-01", src = "yahoo")
+head(ADC)
+
+head(ADC.close<- Ad(ADC),na.action = na.omit)
+
+chartSeries(ADC, type = "candlesticks")
+
+```
+
+```{r }
+# We can see that the values in the original series fluctuate widely, so we need to logarithmically transform the returns data obtained after differencing transformation.
+returns = diff(log(ts(ADC.close)))
+
+autoplot(returns)+
+  labs(x="date", y="returns")
+# Looking at the graph after the data transformation, we can find that there is no obvious trend or periodic fluctuation in the graph, and most of the values fluctuate around a stable value, so we can guess that the returns sequence may be stationary. . However, we can also find that in the later part of the series, there is a small period of time where the fluctuation of the data is significantly stronger than other periods. So there is obvious volatility in this data.
+
+
+# In order to better choose the appropriate model, we first draw the acf and pacf plots. By observation, we see that there are distinct peaks in both plots, which means that the series has a strong autocorrelation, so we may first need the ARIMA model we use to fit the series.
+
+acf(returns, main="ACF Returns", lag.max=100)
+
+pacf(returns, main="PACF Returns", lag.max=100)
+
+# By looking at the ACF and PACF plots, we can get a rough idea of the range of p and q. We can see that in the ACF plot, there is a big drop after q=5, so we can try a q of 0:3. Also we can see that in the ACF plot, there is a big drop after p=4, so we can try a p of 0:5.Next we use a for loop to select the model with the smallest error (selected according to the smallest AIC).
+
+i=1
+
+temp= data.frame()
+ls=matrix(rep(NA,6*50),nrow=50)
+
+for (p in 0:5)
+{
+  for (d in 0:1)
+  {
+    for(q in 0:3)
+    {
+      if(p+d+q<=9)
+      {
+        model<- Arima(returns,order=c(p,d,q))    
+        #including drift because of the obvious trend
+        ls[i,]= c(p,d,q,model$aic,model$bic,model$aicc)          
+        i=i+1            
+        # print(i)
+      }
+    }
+  }
+}
+
+temp = as.data.frame(ls)
+names(temp) = c("p","d","q","AIC","BIC","AICc")
+temp
+
+temp[which.min(temp$AIC),] 
+# By calculation we find that the model with parameters c(5,0,2) is the best.
+
+set.seed(123)
+fit.arima = arima(returns, order=c(5,0,2))
+summary(fit.arima)
+auto.arima(returns)
+# this model is same as the model we get use the lowest AIC.
+
+# We use SARIMA for model diagnosis. Looking at the normalized residuals plot, we see that there is still a short period of high volatility in the data, so we may then use an ARCH or GARCH model to fit this part.
+sarima(returns, 5,0,2)
+
+```
+
+```{r }
+arima.res = fit.arima$residuals
+
+acf(arima.res)
+pacf(arima.res)
+
+# In order to observe the auto correlation of the residual part more clearly, we use arima.res^2 to draw the ACF and PACF graphs.
+acf(arima.res^2, main="Squared Residuals", lag.max=100)
+pacf(arima.res^2, main="Squared Residuals", lag.max=100) # p=1,2,4
+
+# By looking at the ACF and PACF plots after zooming in on the features, we can see that the plots still show significant autocorrelation in the sequence. But at the same time, we can also observe that the time with large fluctuations in the series is very short and does not show regularity, so we think it is more appropriate to use the ARCH model next.
+
+# Therefore, we select the appropriate p value by observing the PACF graph. By observing, we find that the phenomenon of truncation occurs after p=4, and when lag=1, 2, 4, the corresponding value is larger, so we can try compare the fitting effects of different models when p=1, 2, and 4.
+
+# as.array(arima.res)
+
+# according to the ACF and PACF plots, we can try p=1,2,4
+arch.fit1 <- garchFit(~garch(1,0), data=arima.res, trace=F)
+summary(arch.fit1)
+
+arch.fit2 <- garchFit(~garch(2,0), data=arima.res, trace=F)
+summary(arch.fit2)
+
+arch.fit3 <- garchFit(~garch(4,0), data=arima.res, trace=F)
+summary(arch.fit3)
+
+# ARCH
+ARCH <- list()
+cc <- 1
+for(p in 1:4){
+  ARCH[[cc]] <- garch(arima.res, order=c(0,p), trace = F)
+  cc <- cc+1
+}
+
+ARCH_AIC <- sapply(ARCH, AIC) # model with lowest AIC is the best
+min(ARCH_AIC)
+
+which(ARCH_AIC == min(ARCH_AIC))
+
+ARCH[[which(ARCH_AIC == min(ARCH_AIC))]] # best model
+
+# By comparison, we find that the model fitting effect of q=4 is the best.
+arch04<- garchFit(~garch(4,0), data=arima.res, trace=F)
+summary(arch04)
+
+# At the same time, we can see that the p-values of all Ljung-Box tests are below 0.05, indicating that the residuals of this model are normally distributed and white noise, and there is nothing else to model. The model we used is already a good fit, everything in the original sequence is well extracted by the model. Furthermore, we can see that the p-values for the Jarque-Bera test and the Shapiro-Wilk test are also below 0.05, again indicating that the residuals of the model are white noise.
+
+
+```
+
+
+$(1-0.2726B -0.6796B^2+0.0474B^3+0.1214B^4-0.0974B^5)x_t=(1-0.3512B-0.5780B^2)y_t$
+
+$y_t=\sigma_t \epsilon_t$
+
+$\sigma_t^2 = 9.3993\times10^{-5}+2.0732\times10^{-1}{y_{t-1}}^2+2.0482\times10^{-1}{y_{t-2}}^2+1.2272\times10^{-1}{y_{t-3}}^2+9.5682\times10^{-2}{y_{t-4}}^2$
+
+

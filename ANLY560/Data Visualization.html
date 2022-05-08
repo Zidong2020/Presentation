@@ -1,0 +1,287 @@
+<html>
+<head>
+
+<style>
+
+body {
+	font-family:verdana;
+    background-image: none;
+    background-color: whitesmoke;
+    width: 1422px;
+
+}
+
+.headerLogo{
+  top: -65px;
+  height: 150px;
+  line-height: 150px;
+  overflow: hidden;
+  text-align: center;
+  
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #3c096c;
+    max-width: 1422px;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: grey;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+    
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: .8;
+}
+
+tr{
+   text-align: top;
+   background-color:#ffffff
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+img:hover {
+  opacity: .6;
+}
+
+.myDiv {
+  border: 5px outset lightgray;
+  background-color: lightslategrey;
+  text-align: center;
+}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+</head>
+
+
+
+<body>
+
+<div class="headerLogo">
+<img src="https://zidongxu.georgetown.domains/ANLY560//pic/house_banner.png" width=1422px height=175px/>
+</div>
+
+<!--Navigation bar-->
+<div id="nav-placeholder">
+    
+</div>
+
+<script>
+$(function(){
+  $("#nav-placeholder").load("nav.html");
+});
+</script>
+<!--end of Navigation bar-->
+
+<table width="100%">
+	<col style="width:28%">
+	<col style="width:70%">
+	<col style="width:2%">
+	
+	<tbody>
+	<tr>
+		<th></th>
+		<td><font color=#3c096c><strong>Data Visualization </strong></font>
+		</td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/pic4.1.png" width=300px height=200px><br><br>
+		<font size="2" color="grey">pic4.1</font>
+		</th>
+		<td>
+        <font color=#3c096c><strong>Brief Description about this part: </strong> </font><br>
+          <p>
+              In this section we use two tools, Tableau and plotly, to explore the data collected in the Data sources section. The Tableau part mainly includes the exploration of macroeconomic data (financial expenditure and fiscal revenue), population data (urban and rural population data, birth rate and death rate), and population growth rates in different regions. In the plotly part, we mainly explored the data of the real estate industry, including the annual investment amount, the comparison between the investment situation of different types of buildings, and the comparison between the investment amount in different regions. Please see the detailed analysis section below.
+          </p>      
+          
+        </td>
+		<td></td>
+		
+	</tr>
+	
+	<tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part One: Tableau </strong><br><br>
+        According to the 
+        <br><br>
+        Link for Macro data (year) in this part: <br>
+        <a href="https://public.tableau.com/app/profile/zidong.xu/viz/HW_2_Mac_Fiscal_Total_year/Dashboard1?publish=yes" >https://public.tableau.com/app/profile/zidong.xu/viz/HW_2_Mac_Fiscal_Total_year/Dashboard1?publish=yes</a><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/1.1_Mac_Fiscal_Total_year.png" width=830px height=530px></a><br>
+      </p>
+
+      <p>
+        <br><br>
+        Link for Population data in this part: <br>
+        <a href="https://public.tableau.com/app/profile/zidong.xu/viz/HW_2_Mac_Population_year/Whole?publish=yes" >https://public.tableau.com/app/profile/zidong.xu/viz/HW_2_Mac_Population_year/Whole?publish=yes</a><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/1.2_Population_Birth_Death_Rate.png" width=800px height=500px></a><br>
+      </p>
+
+      <p>
+        <br><br>
+        Link for Region data in this part: <br>
+        <a href="https://public.tableau.com/app/profile/zidong.xu/viz/HW_2_Mac_Population_year/Growth_Rate_Region?publish=yes" >https://public.tableau.com/app/profile/zidong.xu/viz/HW_2_Mac_Population_year/Growth_Rate_Region?publish=yes</a><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/1.3_Growth_Rate_Region.png" width=830px height=450px></a><br>
+      </p>
+        
+        </td>
+		<td></td>
+	</tr>
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part Two: Plotly </strong><br><br>
+        The following figure mainly explores the data we collected in the data sources section. By observing, we can find that because our data is annual and monthly data on the investment situation of the real estate industry, most of the charts show the obvious cycles in our data. , and also showed a certain trend. At the same time, in order to better analyze our project, we also extracted data from different regions and compared the data by region. In addition, we also compared the demographic characteristics of different regions, hoping to find a link between fluctuations in population trends and fluctuations in investment in the real estate industry. The results are shown in the figure below. <br><br>
+
+
+
+      </p>
+
+        <p>Relevant codes for this part: </p>
+        <p> 
+          <a href="HW2_industry.ipynb" target="_blank">HW2_industry.ipynb </a><br><br>
+      </p>
+
+      <p>
+        We can see that the head of the real estate industry is rising year by year, and there is a clear cycle. <br><br>
+        pic2.1 is about Annual cumulative investment from 2000 to 2021<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.1_Annual_cumulative_investment.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        We can see that the investment growth rate of the real estate industry fluctuates greatly, and it dropped to 0 in 2008, which may be related to the global economic crisis around 2008. After a brief recovery, the growth rate also decreased year by year. Especially in 2020, the investment growth rate suddenly dropped to a negative value, which may be related to Covid-19, and at the same time rose significantly a few months later, this may be because the epidemic situation has improved, and the country's future stimulus to the real estate industry will increase investment.<br><br>
+        pic2.2 is about Annual Investment growth (%) from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.2_Investment_cumulative_growth.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        The figure below shows the relationship between the investment in the real estate industry and its supporting facilities investment. It is in line with common sense. They are positively related, but there are also differences for some other reasons, especially when the investment increases, the difference becomes larger. <br><br>
+        pic2.3 is about the relationship between Invest and Auxiliary_project from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.3_Invest_Auxiliary_project.png" width=650px height=400px></a>
+      </p>
+
+      <p>
+        We can observe that there was a peak for houses under 90 square meters around 2015, which may indicate that due to the good economic situation at that time, more young people were able to participate in the activities of buying houses, which stimulated the purchase of houses from the demand side. Further investment in the real estate sector.<br><br>
+        pic2.4 is about Housing Investment for below_90 from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.4_Housing_investment_below90.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        We can observe from the figure below that the growth rate of larger units has stabilized in recent years, which indicates that people's purchase intention is not strong. It may be because young people have reservations about having a second child, so the rigid demand has weakened. It may also be because the overall economic growth is not high, people tend to buy houses in affordable small units.<br><br>
+        pic2.5 is about Housing Investment for over_144 from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.5_Housing_investment_over144.png" width=650px height=380px></a><br>
+      </p>
+
+      <p>
+        The figure below shows the real estate industry's investment in office buildings. We can obviously find that the investment growth rate has been decreasing in recent years, and the reasons may be as mentioned above.<br><br>
+        pic2.6 is about Annual Office Building Investment cumulative from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.6_Office_building_investment_cumulative.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        As can be seen from the chart below,  the investment in the real estate industry in Beijing had a low point around 2008, which may be related to the global economic crisis at that time. At the same time, we can find that the investment in the real estate industry in Hunan Province has gradually caught up with Beijing in recent years.<br><br>
+        pic2.7 Comparing the amount of Investment in Beijing and Hunan Province from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.7_Compare_invest_Beijing_Hunan.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        From the figure below, we can find that the newly built commercial residential buildings in Hunan Province is increasing year by year, especially from 2007 to 2012, the newly built commercial residential buildings in Hunan Province has surged every year. At the same time, I can find that the newly added commercial residential area in Beijing has been in a relatively stable state in the past ten years.<br><br>
+        pic2.8 Comparing the residential construction cumulative between Bejing and Hunan Province from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.8_Commercial_area_construct_Beijing_Hunan.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        By observing the figure below, we can find that the GDP of Hunan Province surpassed that of Beijing around 2009, and this feature is just in line with the fact that the newly added commercial housing in Hunan Province exceeded that of Beijing around 2008. , so we can speculate that the real estate industry is also one of the important industries to promote local economic development, and has a relatively large contribution to GDP.<br><br>
+        pic2.9 Comparing GDP of Beijing and Hunan Province from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.9_Compare_GDP_Beijing_Hunan.png" width=650px height=380px></a>
+      </p>
+
+      <p>
+        By comparing pic2.10 and pic2.11, we can find that in the two population statistics in 2005 and 2015, the population of 0-14 years old in Beijing is significantly less than that in Hunan Province. At the same time, we can observe that whether it is in Beijing In Hunan Province, the population of 0-14 years old is far smaller than the population of 15-64 years old, so it can be speculated that in 10 years' time, the demand of the new generation of young people who need to buy a house is likely to continue to decline. This will definitely have a potential impact on the development of the real estate industry in the next 10 years.<br><br>
+        pic2.10 shows the Demographic Structure of Hunan Province from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.10_Demo_str_Hunan.png" width=700px height=380px></a><br><br>
+
+        pic2.11 shows the Demographic Structure of Beijing from 2000 to 2021
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_vis/2.11_Demo_str_Bejing.png" width=700px height=380px></a><br>
+      </p>
+
+        </td>
+		<td></td>
+	</tr>
+
+ 
+	<tr>
+		<th></th>
+		<td>
+           <strong>Reference: </strong><br>
+           pic4.1: <a href="https://towardsdatascience.com/the-10-best-data-visualizations-of-2021-fec4c5cf6cdb" >https://towardsdatascience.com/the-10-best-data-visualizations-of-2021-fec4c5cf6cdb</a>  
+        </td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th> <strong>Zidong Xu </strong> </th>
+		<td>
+        <br><br>
+        NetID: zx92<br>
+        Student, Data Analytics<br>
+        Georgetown University<br>
+        </td>
+		<td></td>
+	</tr>
+	
+	</tbody>
+</table>
+
+</body>
+</html>

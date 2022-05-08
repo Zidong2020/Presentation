@@ -1,0 +1,323 @@
+<html>
+<head>
+
+<style>
+
+body {
+	font-family:verdana;
+    background-image: none;
+    background-color: whitesmoke;
+    width: 1422px;
+
+}
+
+.headerLogo{
+  top: -65px;
+  height: 150px;
+  line-height: 150px;
+  overflow: hidden;
+  text-align: center;
+  
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #3c096c;
+    max-width: 1422px;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: grey;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+    
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: .8;
+}
+
+tr{
+   text-align: top;
+   background-color:#ffffff
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+img:hover {
+  opacity: .6;
+}
+
+.myDiv {
+  border: 5px outset lightgray;
+  background-color: lightslategrey;
+  text-align: center;
+}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+</head>
+
+
+
+<body>
+
+<div class="headerLogo">
+<img src="https://zidongxu.georgetown.domains/ANLY560//pic/house_banner.png" width=1422px height=175px/>
+</div>
+
+<!--Navigation bar-->
+<div id="nav-placeholder">
+    
+</div>
+
+<script>
+$(function(){
+  $("#nav-placeholder").load("nav.html");
+});
+</script>
+<!--end of Navigation bar-->
+
+<table width="100%">
+	<col style="width:28%">
+	<col style="width:70%">
+	<col style="width:2%">
+	
+	<tbody>
+	<tr>
+		<th></th>
+		<td><font color=#3c096c><strong>Exploratory Data Analysis </strong></font>
+		</td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic5.1.png" width=300px height=200px><br><br>
+		<font size="2" color="grey">pic5.1</font>
+		</th>
+		<td>
+        <font color=#3c096c><strong>Brief Description about this part: </strong> </font><br>
+          <p>
+              In this part, we mainly analyze Beijing's investment in the real estate industry in the past 20 years. The data source is monthly data from 2000 to 2021. By drawing series charts, Lag plots, decomposing data results, ACF and PACF plots, we have a further in-depth understanding of the trend and periodicity of industry investment. At the same time, we also analyzed the stock price data of WAK, a leading company in China's real estate industry, and used differencing and log transformation methods to detrend the data. Please see the detailed analysis section below.
+              
+          </p>      
+          
+        </td>
+		<td></td>
+		
+	</tr>
+	
+	<tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part One: Basic information about time series plot </strong><br><br>
+        The analysis below focuses on monthly real estate investment data in Beijing and Shanghai over the past 20 years.<br><br>
+        Relevent code for this part: <br>
+        <a href="HW_2_VIS_EDA.Rmd" target="_blank">HW_2_VIS_EDA.Rmd </a><br><br>
+      </p>
+
+      <p> 
+        As can be seen from the figure below, in the past 20 years, investment in the real estate industry in Beijing and Hunan provinces has shown a cyclical upward trend. This is because our statistics are monthly data, accumulated monthly and cleared annually. At the same time, because there is no data in January every year, our cycle is 11 months. Therefore, combined with the background of the data, we can predict that the real estate investment in Beijing and Hunan has shown a seasonal upward trend in the past 20 years. At the same time, combined with the speed of investment growth in recent years, we can speculate that our data is multiplicative. And we can also observe that the monthly investment in Beijing's real estate industry has a trough around 2008, which may be related to the economic crisis in 2008, and financial funds may be affected. <br><br>
+        Comparing the Investment between Beijing and Hunan from 2000 to 2010 (100 million) <br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic1.png" width=650px height=380px></a>
+        <br><br>
+      </p>
+    </td>
+	</tr>
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part Two: Observation from the Lag plots </strong><br><br>
+      </p>
+
+      <p> 
+        From the figure below, we can observe that when lag=1, the data of season=2 obviously deviates from the diagonal, while the data of season=11 is most consistent with the diagonal, which may be because the data in our dataset is accumulated and reset every year. And since January of each year is not included in the data, only 11 months of data are counted each year, so when lag=1, season=2 is the data of the previous year at the end of the year, so the correlation between it and the original data lowest. <br><br>
+        
+        And this feature is more obvious in the following figures Lag1~Lag16 and Lag11 (correlation), we can find that when Lag=11, all the data can be better concentrated on the diagonal line, which shows that our The dataset has strong seasonal characteristics, and every 11 data is a period. <br><br>
+
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lag1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lag1 ~ Lag16<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic2.png" width=400px height=330px></a>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic3.png" width=400px height=350px></a><br><br>
+        Lag11 (correlation)<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic4.png" width=450px height=300px></a><br><br>
+        <br><br>
+      </p>   
+    </td>
+	</tr>
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part Three: Choose an apporiate model </strong><br><br>
+      </p>
+
+      <p> 
+        We can find that when using the additive method, there is obvious periodicity in the random, so the model is not applicable. On the contrary, when we use the multiplicative method, we can find that the graph of random is relatively disordered, so we can guess that our data is more in line with the multiplicative model. <br><br>
+
+        Decomposition of additive time series & Decomposition of multiplicative time series <br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic5.png" width=850px height=400px></a><br>
+        <br><br>
+      </p>
+     </td>   
+	</tr>
+
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part Four: ACF and PACF </strong><br><br>
+      </p>
+
+      <p> 
+
+        We can see that the ACF plot exhibits a clear periodicity, which means that our data is not stationary. Meanwhile, in the PACF plot, we can also see that the correlation values are very high when lag=11 and lag=12. This shows that our data contains significant periodicity, which also shows that our data are not stationary. <br><br>
+
+        ACF & PACF plots<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic6.png" width=850px height=350px></a><br>
+        <br><br>
+      </p>
+    </td>
+	</tr>
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part Six: Dickey-Fuller Test </strong><br><br>
+      </p>
+
+      <p> 
+        The figure below shows the result of the Dickey-Fuller Test, p-value = .01>.05, so we cannot reject Ho, so our data is not stationary, this conclusion supports the conclusion we got in the part four. <br><br>
+
+        code & result <br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic7.png" width=500px height=200px></a><br>
+        <br><br>
+        Therefore we try to use diff function and Log transformation to detrend data, the the results shows as fellows, we can find that after transformation our data still have seasonality, but it is better than before, maybe we can try other method in the futrue. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic8.png" width=500px height=350px></a><br>
+        <br><br>
+      </p>
+
+      </td>
+	</tr>
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>Part Seven: Detrend Part </strong><br><br>
+        To better demonstrate the detrending method, we have added this section. This part is about the daily stock price of WKA (a real estate company) from 2010 to 2021.<br><br>
+        Relevent data and code for this part: <br>
+        <a href="/stock_price/df_sp_WKA.csv" target="_blank">df_sp_WKA.csv </a><br><br>
+        Take a look at the data we use in this part<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic2.1.png" width=500px height=260px></a><br>
+      
+      </p>
+    
+      <p> 
+        The figure below shows the original series, the series after differencing, and the series after taking the logarithm and then differencing. We can see that compared with the obvious trend in the original series graph, the seires after trasformation have more stationary characteristics. That is, the series in the second and third subgraphs fluctuate stably around the mean value, and compared to one differencing, the series that take the logarithm of the data and then perform differencing is more stationary, because from the figure below we can see that the series in the third subplot fluctuates in a very constant interval compared to the second subplot.<br><br>
+        Plots for original series and series after transformation<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic2.2.png" width=700px height=400px></a><br>
+        <br><br>
+        The three subgraphs in the figure below correspond to the PCA situations of the original series, the series after differencing, and the series after taking the logarithm and then differencing. We can see that when we transform the original data, the correlation between the data is significantly weakened, because when we only keep the changing part of the data, the changing part of the data is random. Combining our data sources, we can also understand that the daily stock price fluctuation is very small relative to the underlying stock price, so if we consider the relationship between the daily stock price, the correlation must be relatively high, and when we When considering only the ups and downs of the daily stock price, the next day's ups and downs are less correlated with the previous day's ups and downs.<br><br>
+        ACF plots for original series and series after transformation<br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_eda/pic2.3.png" width=700px height=430px></a><br>
+        <br><br>
+      
+      </p>
+
+      </td>
+	</tr>
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        <strong>HW3 Part </strong><br><br>
+        Continue to use Beijing Estate Month Investment series: <br><br>
+        Relevant code for this part: <br><br>
+        <strong>Moving Average Smoothing </strong><br><br>
+        <a href="HW_3_models.Rmd" target="_blank">HW_3_models.Rmd </a><br><br>
+        1. Use Three appropriate MA windows for smoothing.(a small number, a little bit lager number and a high number) <br>
+        <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/ma_1.png" width=600px height=450px></a><br><br>
+        
+        <br><br>
+        2. Compare your smoothing for different MA windows and comment. <br><br>
+        We can see that since the seasonal period in our time series is 11, when we set ma=3, the new time series are very close to the original time series, and when we adjust ma=5, we can see the new time series has reduced volatility compared to the original time series. Finally, when we set ma=10, which is very close to our seasonal period 11, we can see that the new time series has basically fluctuated slightly around the annual average. <br><br>
+        Therefore, we found that when the value of MA is increased, the new time series can better reflect the overall trend in the original time series, while ignoring the fluctuations in the smaller interval.<br><br>
+      </p>
+
+      </td>
+	</tr>
+
+
+	<tr>
+		<th></th>
+		<td>
+           <strong>Reference: </strong><br>
+           pic5.1: <a href="https://www.analyticsvidhya.com/blog/2020/04/beginners-guide-exploratory-data-analysis-text-data/" >https://www.analyticsvidhya.com/blog/2020/04/beginners-guide-exploratory-data-analysis-text-data/</a>  
+        </td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th> <strong>Zidong Xu </strong> </th>
+		<td>
+        <br><br>
+        NetID: zx92<br>
+        Student, Data Analytics<br>
+        Georgetown University<br>
+        </td>
+		<td></td>
+	</tr>
+	
+	</tbody>
+</table>
+
+</body>
+</html>

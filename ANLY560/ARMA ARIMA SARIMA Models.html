@@ -1,0 +1,280 @@
+<html>
+<head>
+
+<style>
+
+body {
+	font-family:verdana;
+    background-image: none;
+    background-color: whitesmoke;
+    width: 1422px;
+
+}
+
+.headerLogo{
+  top: -65px;
+  height: 150px;
+  line-height: 150px;
+  overflow: hidden;
+  text-align: center;
+  
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #3c096c;
+    max-width: 1422px;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: grey;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+    
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: .8;
+}
+
+tr{
+   text-align: top;
+   background-color:#ffffff
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+img:hover {
+  opacity: .6;
+}
+
+.myDiv {
+  border: 5px outset lightgray;
+  background-color: lightslategrey;
+  text-align: center;
+}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+</head>
+
+
+
+<body>
+
+<div class="headerLogo">
+<img src="https://zidongxu.georgetown.domains/ANLY560//pic/house_banner.png" width=1422px height=175px/>
+</div>
+
+<!--Navigation bar-->
+<div id="nav-placeholder">
+    
+</div>
+
+<script>
+$(function(){
+  $("#nav-placeholder").load("nav.html");
+});
+</script>
+<!--end of Navigation bar-->
+
+<table width="100%">
+	<col style="width:28%">
+	<col style="width:70%">
+	<col style="width:2%">
+	
+	<tbody>
+	<tr>
+		<th></th>
+		<td><font color=#3c096c><strong>ARMA/ARIMA/SARIMA Models </strong></font>
+		</td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/pic6.1.png" width=300px height=200px><br><br>
+		<font size="2" color="grey">pic6.1</font>
+		</th>
+		<td>
+        <font color=#3c096c><strong>Brief Description about this part: </strong> </font><br>
+          <p>
+              In this part, we continue to use Beijing Estate Month Investment series: <br><br>
+              Relevant code for this part: <br><br>
+              <a href="HW_3_models.Rmd" target="_blank">HW_3_models.Rmd </a><br><br>
+          </p>      
+          
+        </td>
+		<td></td>
+		
+	</tr>
+	
+
+  <tr>
+		<th></th>
+		<td>
+      <p>
+        1. Get the information that you obtained from your previous EDA about the stationarity of your time series.Information you obtained from <br><br>
+        a. ACF graphs <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m1.png" width=600px height=330px></a><br><br>
+        b. Using the Augmented Dickey-Fuller Test to check the stationarity. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m2.png" width=500px height=140px></a><br><br>
+     </p>
+
+      <p>
+        2.  Determine whether your data are stationary or non-stationary. (Remember ACF plots are more reliable than the ADF test) <br><br>
+        Use log transformation:<br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m3.png" width=600px height=330px></a><br><br>
+       
+        Using the Augmented Dickey-Fuller Test to check the stationarity. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m4.png" width=500px height=140px></a><br><br>     
+        
+        According to the ACF plot, we can see that most of the lag values exceed the boundary, which indicates that there is a strong correlation in our time series, so it is not stationary. <br><br>
+
+
+      </p>
+
+      <p>
+        3. If your data (or log transformed data) are non-stationary then: <br><br>
+        1st order differencing after log transformation: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m5.png" width=600px height=330px></a><br><br>
+        We can see that after log and 1st difference transformation, time series shows clear seasonal effect, so we need to do a "Seasonal Difference". <br><br>
+        The result of Seasonal Difference: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m6.png" width=600px height=330px></a><br><br>
+
+        After the seasonal difference, we can see that the Acf plot shows the features of the tail off, so we do another diff(), the result shows as below: <br><br>
+        It can be seen that at this time, both Acf plot and Dickey-Fuller Test indicate that the series is already stationary. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m7.png" width=600px height=330px></a><br><br>     
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m8.png" width=500px height=140px></a><br><br>  
+      </p>
+
+      <p>
+        4. Plot the ACF and PACF plots and decide the order of your AR(p) and MA(q) processes in the ARIMA(p,d,q) model. i.e Decide p(from AR model) ,q(from MA model) and d(number of times you differenced).<br><br>
+        In the ACF and PACF plots below we can see that after lag11, there is a very obvious tail off, so maybe we can choose P=1 and Q=1, then the  model we have is SARIMA (1,1,1,0,1,1).<br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m9.png" width=600px height=330px></a><br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m10.png" width=600px height=330px></a><br><br>
+      </p>
+
+      <p>
+        5. Fit your choice of ARIMA(p,d,q) to the data using the code sarima() or Arima() in R.
+        If you have several choices for p,d,q you may select the model with lowest AIC, BIC or the model with the best model diagnostics. Write the equation of the model. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m11.png" width=600px height=230px></a><br><br>
+        The models with the lowest AIC and BIC are the same, as follow: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m12.png" width=600px height=65px></a><br><br>
+        model fit: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m13.png" width=600px height=460px></a><br><br>
+        From the above figure, we can see that the p.value of each parameter is less than 0.05, which also shows that the model we chose is effective.<br><br>
+
+        equation: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m14.png" width=500px height=260px></a><br><br>
+       </p>
+
+       <p>
+        6. Do a full model diagnostic for your chosen model. Use all the plots to describe about the residuals. <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m15.png" width=700px height=430px></a><br><br>
+        We can see that in the standardized residuals plot, the series already has the disordered characteristics of white noise, the ACF of Residuals plot also shows no strong correlation, and the Q-Q Plot of Std Residuals is also close to a normal distribution. Also, p values for Ljung-Box statistic are all large, so there is no significant correlation in this series anymore. All of these indicate that we choose the model can better extract the characteristics of the original time series. <br><br>
+
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m16.png" width=700px height=430px></a><br><br>
+      </p>
+
+      <p>
+        7.Use auto.arima() to fit an ARIMA(p,d,q) for the above dataset in part (b). Is it different from your chosen model? If so, why do you think is the reason?<br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m17.png" width=500px height=240px></a><br><br>
+        Their results are the same.
+      </p>
+
+      <p><br>
+        8.Forecast using the models you obtain in part 5 with a confidence band. Plot the forecasts and comment according to the problem. <br><br>
+        
+        Next, we forecast the next two cycles: <br><br>
+        <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m18.png" width=700px height=400px></a><br><br>
+        
+        
+        In this part, we make predictions on the log-transformed original time series, and the prediction part is shown in red. We can see that the forecast part still retains the same seasonal characteristics as in previous years, and the change in volatility is relatively stable because we log-transformed the original series. Therefore, this shows that Beijing's investment in the real estate industry is very stable. At the same time, in recent years, the monthly investment in the Beijing real estate industry has only fluctuated slightly in the order of magnitude, with little change. <br><br>
+            
+      </p>
+      
+        <p>
+        9. Compare your SARIMA model with all the benchmark methods. What do you observe? (Here please use accuracy metrics and data vizes(graphs/plots) to compare) <br><br>
+         From the figure below, we can see that the prediction accuracy of the Sarima model(fit model) is better than the other three benchmark methods, and the Sarima model can better reflect the seasonality features in our series.<br><br>
+          <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m19.png" width=800px height=130px></a><br><br>
+          <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m20.png" width=700px height=400px></a><br><br>
+            
+      </p>
+      
+      <p>
+         10. Do a seasonal cross validation using 1 step ahead forecasts and s (your seasonal period)  steps ahead forecasts. <br><br>
+            <a><img src="https://zidongxu.georgetown.domains/ANLY560/pic_models/m21.png" width=600px height=400px></a><br><br>
+            Through observation, we found that when using s steps ahead forecasts, the model's prediction accuracy for data in the later period of a cycle is better than 1 step ahead forecast, which may be due to the fact that our data is calculated year by year, and It shows that Beijing's investment in the real estate industry has a relatively stable growth every year.
+            
+      </p>
+     
+
+      </td>
+	</tr>
+
+
+	<tr>
+		<th></th>
+		<td>
+           <strong>Reference: </strong><br>
+           pic6.1: <a href="https://www.analyticsvidhya.com/blog/2020/04/beginners-guide-exploratory-data-analysis-text-data/" >https://www.machinelearningplus.com/time-series/arima-model-time-series-forecasting-python/</a>  
+        </td>
+		<td></td>
+	</tr>
+	
+	<tr>
+		<th> <strong>Zidong Xu </strong> </th>
+		<td>
+        <br><br>
+        NetID: zx92<br>
+        Student, Data Analytics<br>
+        Georgetown University<br>
+        </td>
+		<td></td>
+	</tr>
+	
+	</tbody>
+</table>
+
+</body>
+</html>
